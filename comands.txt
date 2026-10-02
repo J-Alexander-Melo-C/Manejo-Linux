@@ -1,0 +1,12 @@
+COMANDOS DE PRUEBA 
+
+-mkdir -p miEmpresa/{distintos nombres separados con comas para cada carpeta}
+- cc + ingreso a carpeta + ls -R para listar en arbol 
+. echo para crear archivos ej echo "bienvenidos"+ > /nombre carpeta/index.html
+- cat para ver lo que tiene dentro el archivo.
+- ls -lh + nombre carpeta : muestra el tamaño o lo que pesa el archivo 
+- man + "cualquier tipo de comando": me muestra infromacion de que hace cada comando
+
+
+git config --global user.name + "nombre mio"
+git config --global user.email + "email"
