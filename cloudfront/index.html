@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MedEstudio 2· Aprende medicina fácil</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f8fa;--card:#fff;--tx:#14213d;--mu:#5a6578;--ac:#0b7a75;--ac2:#e8f5f4;--bd:#dde3ea;--ok:#1b8a3a;--ko:#c0392b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1720;--card:#18232f;--tx:#e8eef5;--mu:#9aa8b8;--ac:#3cc4bb;--ac2:#14343a;--bd:#2a3a4a;--ok:#4cd07a;--ko:#ff7b6b}}
+:root[data-theme="dark"]{--bg:#0f1720;--card:#18232f;--tx:#e8eef5;--mu:#9aa8b8;--ac:#3cc4bb;--ac2:#14343a;--bd:#2a3a4a;--ok:#4cd07a;--ko:#ff7b6b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:20px 16px 8px;max-width:900px;margin:auto}
+h1{margin:0;font-size:1.6rem}h1 span{color:var(--ac)}
+.sub{color:var(--mu);margin:4px 0 0}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;max-width:900px;margin:auto;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+nav button{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 14px;border-radius:999px;font:inherit;cursor:pointer}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{max-width:900px;margin:auto;padding:8px 16px 40px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.sys{cursor:pointer;text-align:left;font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
+.sys:hover{border-color:var(--ac)}.sys b{display:block;font-size:1.05rem}.sys small{color:var(--mu)}
+input[type=search]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:5px 12px;cursor:pointer;font:inherit;font-size:.9rem}
+.chip.on{background:var(--ac2);border-color:var(--ac);color:var(--ac)}
+details{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;margin:8px 0}
+summary{cursor:pointer;font-weight:600}
+.tag{font-size:.75rem;background:var(--ac2);color:var(--ac);padding:2px 8px;border-radius:99px;margin-left:6px}
+.btn{background:var(--ac);color:#fff;border:0;padding:10px 18px;border-radius:10px;font:inherit;cursor:pointer}
+.btn.alt{background:var(--ac2);color:var(--ac)}
+.flash{min-height:150px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.15rem;cursor:pointer;user-select:none}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:11px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,transparent)}
+.opt.ko{border-color:var(--ko);background:color-mix(in srgb,var(--ko) 15%,transparent)}
+.bar{height:8px;background:var(--bd);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);width:0}
+.mu{color:var(--mu);font-size:.9rem}
+a{color:var(--ac)}
+.warn{border-left:4px solid var(--ko)}
+</style></head><body>
+<header><h1>Med<span>Estudio</span></h1><p class="sub">Consulta rápida, tarjetas y quizzes para estudiantes de medicina.</p></header>
+<nav id="nav"></nav>
+<main>
+<section id="inicio">
+<div class="card"><b>Cómo usar esta página</b><p class="mu">1) Explora un sistema en <b>Consulta</b>. 2) Repasa con <b>Tarjetas</b>. 3) Mídete en el <b>Quiz</b>. 4) Profundiza en las <b>Fuentes</b> verificadas.</p>
+<div class="bar"><i id="pb"></i></div><p class="mu" id="pt"></p></div>
+<div class="grid" id="sysgrid"></div>
+<div class="card warn mu"><b>Aviso:</b> contenido educativo y de repaso. No sustituye guías clínicas vigentes, el criterio de tus profesores ni la atención de un paciente real. Verifica umbrales y dosis en la guía local.</div>
+</section>
+<section id="consulta">
+<input type="search" id="q" placeholder="Buscar: diabetes, EPOC, Glasgow, troponina…">
+<div class="chips" id="chips"></div>
+<div id="list"></div>
+</section>
+<section id="tarjetas">
+<div class="card flash" id="fc"></div>
+<p class="mu" id="fcn" style="text-align:center"></p>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+<button class="btn alt" id="fprev">← Anterior</button><button class="btn" id="fflip">Voltear</button><button class="btn alt" id="fnext">Siguiente →</button><button class="btn alt" id="fshuf">Mezclar</button></div>
+</section>
+<section id="quiz"><div id="qz"></div></section>
+<section id="fuentes">
+<div class="card"><b>Fuentes confiables y verificadas</b><p class="mu">El contenido se basa en estas referencias. Prioriza guías y revisiones revisadas por pares.</p></div>
+<div id="src"></div>
+</section>
+</main>
+<script>
+const SYS=[
+{id:"cardio",n:"Cardiovascular",i:"❤️",t:[
+{n:"Gasto cardíaco",k:"gasto cardiaco volumen sistolico frecuencia",b:"<b>GC = FC × volumen sistólico.</b> Valor normal en reposo ≈ 4–8 L/min. Depende de precarga, poscarga y contractilidad."},
+{n:"Hipertensión arterial",k:"hta presion arterial",b:"Dx según guía: ESC/ESH ≥140/90 mmHg en consulta; ACC/AHA ≥130/80. Confirmar en visitas repetidas o con MAPA/AMPA. Busca daño de órgano blanco (corazón, riñón, retina, cerebro)."},
+{n:"Síndrome coronario agudo",k:"infarto troponina ecg sca iamcest",b:"Dolor torácico + <b>ECG</b> en los primeros 10 min y <b>troponina</b> (marcador más específico de daño miocárdico). Elevación persistente del ST = IAMCEST → reperfusión urgente."}]},
+{id:"resp",n:"Respiratorio",i:"🫁",t:[
+{n:"EPOC",k:"epoc espirometria fev1",b:"Dx con espirometría <b>postbroncodilatador: FEV1/FVC &lt; 0,70</b>. Causa principal: tabaco. Se clasifica según síntomas y exacerbaciones (GOLD)."},
+{n:"Asma",k:"asma obstruccion reversible sibilancias",b:"Obstrucción variable y <b>reversible</b>, hiperreactividad bronquial. Síntomas: sibilancias, tos, disnea, opresión, a menudo nocturnos. Base del tratamiento: corticoide inhalado."},
+{n:"Neumonía adquirida en la comunidad",k:"neumonia curb-65",b:"Escala <b>CURB-65</b>: Confusión, Urea elevada, FR ≥30, PA baja (sistólica &lt;90 o diastólica ≤60), edad ≥65. Cada criterio suma 1 punto; mayor puntaje = mayor gravedad."}]},
+{id:"endo",n:"Endocrino",i:"🧪",t:[
+{n:"Diagnóstico de diabetes",k:"diabetes glucosa hba1c ayunas",b:"Criterios ADA: glucosa en ayunas <b>≥126 mg/dL</b>, HbA1c <b>≥6,5 %</b>, glucemia a las 2 h de SOG <b>≥200 mg/dL</b>, o glucemia al azar ≥200 con síntomas clásicos. Confirmar con segunda prueba si no hay síntomas inequívocos."},
+{n:"Cetoacidosis diabética",k:"cad cetoacidosis",b:"Triada: hiperglucemia, <b>cetosis</b> y <b>acidosis metabólica</b> con anión gap elevado. Manejo: líquidos, insulina y vigilar potasio."},
+{n:"Hipotiroidismo",k:"tiroides tsh hipotiroidismo",b:"Primario: <b>TSH alta</b> con T4 libre baja. Causa frecuente con yodo suficiente: tiroiditis de Hashimoto."}]},
+{id:"neuro",n:"Neurología y urgencias",i:"🧠",t:[
+{n:"Escala de Glasgow",k:"glasgow coma conciencia",b:"Evalúa apertura ocular (1–4), respuesta verbal (1–5) y motora (1–6). Rango <b>3–15</b>. ≤8 = coma grave, valorar vía aérea."},
+{n:"ACV: reconocimiento",k:"acv ictus stroke fast",b:"<b>FAST</b>: Face (cara caída), Arms (debilidad de brazo), Speech (habla alterada), Time (llamar a urgencias). La ventana de reperfusión es limitada."},
+{n:"Sepsis: cribado rápido",k:"sepsis qsofa",b:"<b>qSOFA</b> (≥2 sugiere mayor riesgo): FR ≥22/min, alteración del estado mental, PA sistólica ≤100 mmHg. Es herramienta de alerta, no diagnóstico definitivo."}]}];
+const FC=[["¿Fórmula del gasto cardíaco?","GC = FC × volumen sistólico"],["¿Marcador más específico de daño miocárdico?","Troponina"],["¿Criterio espirométrico de EPOC?","FEV1/FVC postbroncodilatador < 0,70"],["¿Glucosa en ayunas diagnóstica de diabetes?","≥ 126 mg/dL"],["¿HbA1c diagnóstica de diabetes?","≥ 6,5 %"],["¿Rango de la escala de Glasgow?","3 a 15 puntos"],["¿Qué significa FAST en ACV?","Face, Arms, Speech, Time"],["¿Qué evalúa CURB-65?","Gravedad de neumonía comunitaria"],["¿Criterios del qSOFA?","FR ≥22, alteración mental, PAS ≤100 mmHg"],["¿Hallazgo típico del hipotiroidismo primario?","TSH alta con T4 libre baja"],["¿Triada de la cetoacidosis diabética?","Hiperglucemia, cetosis, acidosis metabólica"]];
+const QZ=[["¿Cuál es la fórmula del gasto cardíaco?",["FC × volumen sistólico","PA × resistencia","FC ÷ volumen sistólico","VS × FR"],0,"GC = FC × VS."],["Glucosa en ayunas que define diabetes (criterio ADA):",["≥ 100 mg/dL","≥ 126 mg/dL","≥ 140 mg/dL","≥ 200 mg/dL"],1,"≥126 mg/dL, confirmando según contexto."],["En EPOC, la espirometría postbroncodilatador muestra:",["FEV1/FVC < 0,70","FEV1/FVC > 0,90","Solo FVC baja","Resultado normal"],0,"Obstrucción persistente no totalmente reversible."],["Puntuación mínima de la escala de Glasgow:",["0","1","3","5"],2,"Rango 3–15."],["En CURB-65, la «R» corresponde a:",["Reflejos","Frecuencia respiratoria ≥30","Rash","Rigidez"],1,"Respiratory rate ≥30/min."],["Marcador más específico de lesión miocárdica:",["CK total","LDH","Troponina","AST"],2,"Troponina cardíaca."],["En FAST, la «S» significa:",["Sangrado","Speech (habla)","Sudor","Síncope"],1,"Alteración del habla."],["Criterio que NO pertenece al qSOFA:",["FR ≥22","Alteración mental","PAS ≤100","Fiebre >38 °C"],3,"La fiebre no forma parte del qSOFA."]];
+const SRC=[["MedlinePlus (en español) – NIH / Biblioteca Nacional de Medicina","https://medlineplus.gov/spanish/","Información de salud revisada."],["PubMed – Biblioteca Nacional de Medicina de EE. UU.","https://pubmed.ncbi.nlm.nih.gov/","Literatura biomédica revisada por pares."],["Organización Mundial de la Salud (OMS)","https://www.who.int/es","Guías y datos de salud pública globales."],["Cochrane Library","https://www.cochranelibrary.com/es","Revisiones sistemáticas de alta calidad."],["StatPearls – NCBI Bookshelf","https://www.ncbi.nlm.nih.gov/books/NBK430685/","Revisiones por tema con revisión por pares."],["Manual MSD (versión profesional)","https://www.msdmanuals.com/es/professional","Referencia clínica por especialidad."],["American Diabetes Association – Standards of Care","https://diabetesjournals.org/care/issue","Criterios diagnósticos de diabetes."],["GOLD – Estrategia global para EPOC","https://goldcopd.org/","Guía de referencia para EPOC."],["ESC – Guías de práctica clínica","https://www.escardio.org/Guidelines","Guías cardiovasculares europeas."],["Surviving Sepsis Campaign","https://www.sccm.org/survivingsepsiscampaign","Guías internacionales de sepsis."]];
+const $=s=>document.querySelector(s);
+const TABS=[["inicio","Inicio"],["consulta","Consulta"],["tarjetas","Tarjetas"],["quiz","Quiz"],["fuentes","Fuentes"]];
+let P={seen:{},best:0};
+try{P=Object.assign(P,JSON.parse(localStorage.getItem("medest")||"{}"))}catch(e){}
+function save(){try{localStorage.setItem("medest",JSON.stringify(P))}catch(e){}}
+function go(id){document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===id));document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===id));window.scrollTo(0,0)}
+$("#nav").innerHTML=TABS.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join("");
+$("#nav").onclick=e=>{if(e.target.dataset.t)go(e.target.dataset.t)};
+function prog(){const tot=SYS.reduce((a,s)=>a+s.t.length,0),n=Object.keys(P.seen).length;$("#pb").style.width=(n/tot*100)+"%";$("#pt").textContent=`Temas revisados: ${n}/${tot} · Mejor quiz: ${P.best}/${QZ.length}`}
+$("#sysgrid").innerHTML=SYS.map(s=>`<button class="sys" data-s="${s.id}"><b>${s.i} ${s.n}</b><small>${s.t.length} temas</small></button>`).join("");
+$("#sysgrid").onclick=e=>{const b=e.target.closest(".sys");if(b){cat=b.dataset.s;render();go("consulta")}};
+let cat="all";
+function render(){const q=$("#q").value.toLowerCase().trim();
+$("#chips").innerHTML=[["all","Todos"],...SYS.map(s=>[s.id,s.n])].map(c=>`<button class="chip ${cat===c[0]?"on":""}" data-c="${c[0]}">${c[1]}</button>`).join("");
+let h="";SYS.filter(s=>cat==="all"||s.id===cat).forEach(s=>s.t.forEach(t=>{if(q&&!(t.n+t.k).toLowerCase().includes(q))return;
+h+=`<details data-k="${t.n}"><summary>${t.n}<span class="tag">${s.n}</span>${P.seen[t.n]?" ✓":""}</summary><p>${t.b}</p></details>`}));
+$("#list").innerHTML=h||'<p class="mu">Sin resultados.</p>'}
+$("#q").oninput=render;
+$("#chips").onclick=e=>{if(e.target.dataset.c){cat=e.target.dataset.c;render()}};
+$("#list").addEventListener("toggle",e=>{const d=e.target;if(d.open&&d.dataset.k&&!P.seen[d.dataset.k]){P.seen[d.dataset.k]=1;save();prog();d.querySelector("summary").append(" ✓")}},true);
+let fi=0,fl=false,deck=FC.slice();
+function fshow(){const c=deck[fi];$("#fc").innerHTML=fl?`<b style="color:var(--ac)">${c[1]}</b>`:c[0];$("#fcn").textContent=`Tarjeta ${fi+1} de ${deck.length} · toca para voltear`}
+$("#fc").onclick=$("#fflip").onclick=()=>{fl=!fl;fshow()};
+$("#fnext").onclick=()=>{fi=(fi+1)%deck.length;fl=false;fshow()};
+$("#fprev").onclick=()=>{fi=(fi-1+deck.length)%deck.length;fl=false;fshow()};
+$("#fshuf").onclick=()=>{deck.sort(()=>Math.random()-.5);fi=0;fl=false;fshow()};
+let qi=0,sc=0,ans=false;
+function quiz(){const el=$("#qz");
+if(qi>=QZ.length){if(sc>P.best){P.best=sc;save();prog()}el.innerHTML=`<div class="card"><h2>Resultado: ${sc}/${QZ.length}</h2><p class="mu">${sc>=QZ.length-1?"¡Excelente dominio!":sc>=QZ.length/2?"Buen avance. Repasa las tarjetas de lo fallado.":"Vuelve a Consulta y repasa los temas."}</p><button class="btn" id="rs">Reintentar</button></div>`;$("#rs").onclick=()=>{qi=0;sc=0;quiz()};return}
+const q=QZ[qi];ans=false;
+el.innerHTML=`<div class="card"><p class="mu">Pregunta ${qi+1} de ${QZ.length}</p><b>${q[0]}</b>${q[1].map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}<p id="fb" class="mu"></p><button class="btn" id="nx" style="display:none">Siguiente</button></div>`;
+el.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(ans)return;ans=true;const i=+b.dataset.i;if(i===q[2])sc++;
+el.querySelectorAll(".opt").forEach(o=>{if(+o.dataset.i===q[2])o.classList.add("ok")});if(i!==q[2])b.classList.add("ko");
+$("#fb").textContent=(i===q[2]?"✅ Correcto. ":"❌ Incorrecto. ")+q[3];$("#nx").style.display="inline-block"});
+$("#nx").onclick=()=>{qi++;quiz()}}
+$("#src").innerHTML=SRC.map(s=>`<div class="card"><a href="${s[1]}" target="_blank" rel="noopener noreferrer"><b>${s[0]}</b></a><p class="mu" style="margin:4px 0 0">${s[2]}</p></div>`).join("");
+render();fshow();quiz();prog();go("inicio");
+</script></body></html>
