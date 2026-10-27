@@ -1,0 +1,2 @@
+camisetas,8
+pantalones,5
